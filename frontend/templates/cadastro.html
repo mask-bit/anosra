@@ -223,7 +223,7 @@
     <div class="container">
         <div class="header-text">
             <h1>Criar sua conta</h1>
-            <p>Ou <a href="login.html">entrar na sua conta existente</a></p>
+            <p>Ou <a href="/login">entrar na sua conta existente</a></p>
         </div>
 
         <div class="form-card">
@@ -434,7 +434,7 @@
                     showNotification('Conta criada com sucesso!', 'success');
                     
                     setTimeout(() => {
-                        window.location.href = 'negocios.html';
+                        window.location.href = '/negocios';
                     }, 1000);
                 } catch (error) {
                     showNotification(error.message || 'Erro ao criar conta', 'error');

@@ -181,7 +181,7 @@
     <div class="login-container">
         <div class="login-header">
             <h1 class="login-title">Entrar na sua conta</h1>
-            <p class="signup-text">Ou <a href="cadastro.html" class="signup-link">fazer cadastro</a></p>
+            <p class="signup-text">Ou <a href="/cadastro" class="signup-link">fazer cadastro</a></p>
         </div>
 
         <div class="login-card">
@@ -211,7 +211,7 @@
                 </div>
 
                 <div class="forgot-password-container">
-                    <a href="recuperar-senha.html" class="forgot-password">Esqueceu a senha?</a>
+                    <a href="/recuperar-senha" class="forgot-password">Esqueceu a senha?</a>
                 </div>
 
                 <button type="submit" class="btn-submit">Entrar</button>
@@ -272,7 +272,7 @@
                     showNotification('Login realizado com sucesso!', 'success');
                     
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = '/dashboard';
                     }, 1000);
                 } catch (error) {
                     showNotification(error.message || 'Erro ao fazer login', 'error');
