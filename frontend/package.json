@@ -1,0 +1,17 @@
+{
+  "name": "anosra-frontend",
+  "version": "1.0.0",
+  "description": "Frontend do sistema Anosra - Gestão completa de negócios",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "test": "jest",
+    "format": "prettier --write \"**/*.{js,html,css}\""
+  },
+  "keywords": ["gestao", "negocios", "financeiro"],
+  "author": "Anosra Team",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0"
+  }
+}

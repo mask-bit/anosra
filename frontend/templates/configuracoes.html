@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Anosra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+        }
+
+        /* Header fixo */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a202c;
+            letter-spacing: -0.5px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .notification-icon {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: #f7fafc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .notification-icon:hover {
+            background: #edf2f7;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #f56565;
+            border-radius: 50%;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .user-menu:hover {
+            background: #f7fafc;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .toggle-sidebar {
+            background: #f7fafc;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: background 0.3s;
+        }
+
+        .toggle-sidebar:hover {
+            background: #edf2f7;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 260px;
+            height: calc(100vh - 70px);
+            background: #2d3748;
+            color: white;
+            padding: 30px 0;
+            overflow-y: auto;
+            transition: width 0.3s;
+            z-index: 100;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .menu-item {
+            padding: 0 20px;
+            margin-bottom: 5px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: #cbd5e0;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .menu-link:hover {
+            background: #4a5568;
+            color: white;
+        }
+
+        .menu-link.active {
+            background: #4a5568;
+            color: white;
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            min-width: 24px;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 260px;
+            margin-top: 70px;
+            padding: 40px;
+            min-height: calc(100vh - 70px);
+            transition: margin-left 0.3s;
+        }
+
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 80px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #718096;
+        }
+
+        /* Seções de configuração */
+        .config-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .config-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .section-header-text h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .section-header-text p {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .section-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #4299e1;
+        }
+
+        .form-hint {
+            font-size: 13px;
+            color: #718096;
+            margin-top: 6px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* Checkboxes e switches */
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .checkbox-input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 15px;
+            color: #2d3748;
+            cursor: pointer;
+        }
+
+        /* Radio buttons */
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Botões */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #2d3748;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a202c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        /* Warning box */
+        .warning-box {
+            background: #fef5e7;
+            border-left: 4px solid #d69e2e;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .warning-box p {
+            font-size: 14px;
+            color: #744210;
+            margin: 0;
+        }
+
+        /* Info box */
+        .info-box {
+            background: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            color: #2c5282;
+            margin: 0;
+        }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-badge.connected {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-badge.disconnected {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        /* System info */
+        .system-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f7fafc;
+            border-radius: 6px;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+
+            .menu-text {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .radio-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header fixo -->
+    <header class="header">
+        <div class="header-left">
+            <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+            <div class="logo">Anosra</div>
+        </div>
+        <div class="header-right">
+            <div class="notification-icon">
+                🔔
+                <span class="notification-badge"></span>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">JD</div>
+                <span class="user-name">João Silva</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="dashboard.html" class="menu-link">
+                    <span class="menu-icon">📊</span>
+                    <span class="menu-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="negocios.html" class="menu-link">
+                    <span class="menu-icon">💼</span>
+                    <span class="menu-text">Negócios</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="despesas.html" class="menu-link">
+                    <span class="menu-icon">💰</span>
+                    <span class="menu-text">Despesas</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="relatorios.html" class="menu-link">
+                    <span class="menu-icon">📈</span>
+                    <span class="menu-text">Relatórios</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="integracao.html" class="menu-link">
+                    <span class="menu-icon">🔗</span>
+                    <span class="menu-text">Integração</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="configuracoes.html" class="menu-link active">
+                    <span class="menu-icon">⚙️</span>
+                    <span class="menu-text">Configurações</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Configurações</h1>
+            <p class="page-subtitle">Controle total sobre o sistema. Tudo ajustável do seu jeito.</p>
+        </div>
+
+        <div class="config-sections">
+            <!-- 1. Configurações do Negócio -->
+            <section class="config-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: #ebf8ff; color: #3182ce;">💼</div>
+                    <div class="section-header-text">
+                        <h3>Configurações do Negócio</h3>
+                        <p>Informações básicas sobre sua empresa</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nome do Negócio</label>
+                            <input type="text" class="form-input" value="Minha Empresa Ltda" placeholder="Nome do seu negócio">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Data de Início</label>
+                            <input type="date" class="form-input" value="2024-01-15">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Negócio</label>
+                            <select class="form-select">
+                                <option>Restaurante</option>
+                                <option>Lanchonete</option>
+                                <option>Hotel</option>
+                                <option>Loja física</option>
+                                <option>Loja online</option>
+                                <option>Prestador de serviços</option>
+                                <option>Igreja</option>
+                                <option>Escola</option>
+                                <option>Clínica</option>
+                                <option>Autônomo</option>
+                                <option>Outros</option>
+                            </select>
+                            <p class="form-hint">Alterar isso pode mudar métricas, alertas e comparações.</p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Categoria Principal</label>
+                            <select class="form-select">
+                                <option>Alimentação</option>
+                                <option>Varejo</option>
+                                <option>Serviços</option>
+                                <option>Tecnologia</option>
+                                <option>Outros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary">Salvar Alterações</button>
+                        <button class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Preferências Financeiras -->
+            <section class="config-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: #fef5e7; color: #d69e2e;">💰</div>
+                    <div class="section-header-text">
+                        <h3>Preferências Financeiras</h3>
+                        <p>Configure como o sistema analisa suas finanças</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="info-box">
+                        <p>O sistema usa essas informações para ajustar alertas e análises. Nada decorativo.</p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Moeda Padrão</label>
+                            <select class="form-select">
+                                <option>R$ - Real Brasileiro</option>
+                                <option>US$ - Dólar Americano</option>
+                                <option>€ - Euro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Período Financeiro</label>
+                            <select class="form-select">
+                                <option>Mensal</option>
+                                <option>Quinzenal</option>
+                                <option>Semanal</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Margem de Lucro Desejada (%)</label>
+                        <input type="number" class="form-input" value="25" min="0" max="100" placeholder="Ex: 25">
+                        <p class="form-hint">Use esse valor para comparar seu desempenho real com a meta.</p>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Alertas Inteligentes -->
+            <section class="config-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: #fef5e7; color: #f56565;">🔔</div>
+                    <div class="section-header-text">
+                        <h3>Alertas Inteligentes</h3>
+                        <p>Defina como quer ser avisado sobre seu negócio</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="form-group">
+                        <label class="form-label">Tipos de Alertas</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" class="checkbox-input" id="alert1" checked>
+                                <label class="checkbox-label" for="alert1">Ativar alertas financeiros</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" class="checkbox-input" id="alert2" checked>
+                                <label class="checkbox-label" for="alert2">Ativar alertas de inconsistência</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" class="checkbox-input" id="alert3" checked>
+                                <label class="checkbox-label" for="alert3">Ativar alertas de funcionários</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" class="checkbox-input" id="alert4" checked>
+                                <label class="checkbox-label" for="alert4">Ativar alertas de queda de receita</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Sensibilidade dos Alertas</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" class="radio-input" name="sensitivity" id="low" value="low">
+                                <label class="checkbox-label" for="low">Baixa (menos alertas)</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" class="radio-input" name="sensitivity" id="normal" value="normal" checked>
+                                <label class="checkbox-label" for="normal">Normal (recomendado)</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" class="radio-input" name="sensitivity" id="high" value="high">
+                                <label class="checkbox-label" for="high">Alta (mais atenção aos detalhes)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Integrações -->
+            <section class="config-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: #f0fdf4; color: #38a169;">🔗</div>
+                    <div class="section-header-text">
+                        <h3>Integrações</h3>
+                        <p>Gerencie suas conexões externas</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="form-group">
+                        <label class="form-label">Open Finance</label>
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px; background: #f7fafc; border-radius: 8px;">
+                            <div>
+                                <p style="font-weight: 600; margin-bottom: 4px;">Status: <span class="status-badge disconnected">🔴 Não conectado</span></p>
+                                <p style="font-size: 13px; color: #718096;">Conecte seu banco para análises mais precisas</p>
+                            </div>
+                            <a href="integracao.html" class="btn btn-primary">Gerenciar</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Outras Integrações</label>
+                        <p class="form-hint">Em breve: integrações com contadores, sistemas de pagamento e muito mais.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Usuário e Segurança -->
+            <section class="config-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: #faf5ff; color: #805ad5;">🔒</div>
+                    <div class="section-header-text">
+                        <h3>Usuário e Segurança</h3>
+                        <p>Segurança não é opcional</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-input" value="João Silva">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">E-mail</label>
+                            <input type="email" class="form-input" value="joao@email.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Conta</label>
+                        <input type="text" class="form-input" value="Administrador" disabled>
+                    </div>
+
+                    <div class="warning-box">
+                        <p><strong>Segurança:</strong> Use uma senha forte e única. Nunca compartilhe sua senha.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Alterar Senha</label>
+                        <input type="password" class="form-input" placeholder="Nova senha">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Confirmar Nova Senha</label>
+                        <input type="password" class="form-input" placeholder="Confirme a nova senha">
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary">Atualizar Dados</button>
+                        <button class="btn btn-secondary">Encerrar Sessões Ativas</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Dados e Privacidade -->
+            <section class="config-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: #ebf8ff; color: #3182ce;">📁</div>
+                    <div class="section-header-text">
+                        <h3>Dados e Privacidade</h3>
+                        <p>Seus dados. Suas regras.</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="form-group">
+                        <label class="form-label">Exportar Dados</label>
+                        <p class="form-hint">Baixe todos os seus dados em formato PDF ou CSV</p>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary">Exportar em PDF</button>
+                            <button class="btn btn-secondary">Exportar em CSV</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Gerenciar Dados</label>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary">Limpar Dados Estimados</button>
+                            <button class="btn btn-secondary">Resetar Métricas</button>
+                        </div>
+                    </div>
+
+                    <div class="warning-box">
+                        <p><strong>Atenção:</strong> A exclusão de dados é permanente e não pode ser desfeita.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-danger">Solicitar Exclusão de Dados</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Aparência e Experiência -->
+            <section class="config-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: #faf5ff; color: #805ad5;">🎨</div>
+                    <div class="section-header-text">
+                        <h3>Aparência e Experiência</h3>
+                        <p>Porque conforto também importa</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Tema</label>
+                            <select class="form-select">
+                                <option>Claro</option>
+                                <option>Escuro</option>
+                                <option>Automático</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Idioma</label>
+                            <select class="form-select">
+                                <option>Português (Brasil)</option>
+                                <option>English (US)</option>
+                                <option>Español</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Formato de Números</label>
+                        <select class="form-select">
+                            <option>1.234,56 (Brasileiro)</option>
+                            <option>1,234.56 (Internacional)</option>
+                        </select>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary">Salvar Preferências</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. Ajuda e Sistema -->
+            <section class="config-section">
+                <div class="section-header">
+                    <div class="section-icon" style="background: #f0fdf4; color: #38a169;">ℹ️</div>
+                    <div class="section-header-text">
+                        <h3>Ajuda e Sistema</h3>
+                        <p>Informações e suporte</p>
+                    </div>
+                </div>
+                <div class="section-body">
+                    <div class="form-group">
+                        <label class="form-label">Informações do Sistema</label>
+                        <div class="system-info">
+                            <div class="info-item">
+                                <span class="info-label">Versão:</span>
+                                <span class="info-value">1.0.3</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Última Atualização:</span>
+                                <span class="info-value">15/01/2025</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Status:</span>
+                                <span class="info-value" style="color: #38a169;">✓ Online</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Links Úteis</label>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary">Central de Ajuda</button>
+                            <button class="btn btn-secondary">Termos de Uso</button>
+                            <button class="btn btn-secondary">Política de Privacidade</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            Painel de gestão Anosra © 2025
+        </footer>
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+    </script>
+</body>
+</html>

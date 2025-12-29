@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despesas - Anosra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a202c;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .notification-icon {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: #f7fafc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #f56565;
+            border-radius: 50%;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 260px;
+            height: calc(100vh - 70px);
+            background: #2d3748;
+            color: white;
+            padding: 30px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .menu-item {
+            padding: 0 20px;
+            margin-bottom: 5px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            color: #cbd5e0;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .menu-link:hover {
+            background: #4a5568;
+            color: white;
+        }
+
+        .menu-link.active {
+            background: #4a5568;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            margin-top: 70px;
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .btn-primary {
+            background: #2d3748;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .summary-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a202c;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #718096;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .summary-change {
+            font-size: 13px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .summary-change.positive {
+            color: #48bb78;
+        }
+
+        .summary-change.negative {
+            color: #f56565;
+        }
+
+        .alert-card {
+            background: #fff5f5;
+            border-left: 4px solid #f56565;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-title {
+            font-weight: 700;
+            color: #c53030;
+            margin-bottom: 8px;
+        }
+
+        .alert-text {
+            color: #742a2a;
+            font-size: 14px;
+        }
+
+        .suggestion-card {
+            background: #f0fff4;
+            border-left: 4px solid #48bb78;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .suggestion-title {
+            font-weight: 700;
+            color: #2f855a;
+            margin-bottom: 8px;
+        }
+
+        .suggestion-text {
+            color: #276749;
+            font-size: 14px;
+        }
+
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a202c;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #2d3748;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #2d3748;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .integration-card {
+            background: #ebf8ff;
+            border: 2px solid #3182ce;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .integration-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .integration-icon {
+            font-size: 32px;
+        }
+
+        .integration-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c5282;
+        }
+
+        .integration-benefits {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .integration-benefits li {
+            padding: 8px 0;
+            color: #2c5282;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .integration-benefits li:before {
+            content: "✓";
+            color: #38a169;
+            font-weight: 700;
+        }
+
+        .btn-integration {
+            background: #3182ce;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .expense-list {
+            list-style: none;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-category {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .expense-date {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .expense-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 30px;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a0aec0;
+        }
+
+        @media (max-width: 1024px) {
+            .two-column-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">Anosra</div>
+        </div>
+        <div class="header-right">
+            <div class="notification-icon">
+                🔔
+                <span class="notification-badge"></span>
+            </div>
+            <div class="user-menu">
+                <div class="user-avatar">JD</div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="menu-item">
+                <a href="dashboard.html" class="menu-link">
+                    <span>📊</span> Dashboard
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="negocios.html" class="menu-link">
+                    <span>💼</span> Negócios
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="despesas.html" class="menu-link active">
+                    <span>💰</span> Despesas
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <span>📈</span> Relatórios
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <span>🔗</span> Integração
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <span>⚙️</span> Configurações
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Despesas</h1>
+            <button class="btn-primary" onclick="document.getElementById('addExpenseForm').scrollIntoView({behavior: 'smooth'})">
+                + Nova Despesa
+            </button>
+        </div>
+
+        <section class="summary-section">
+            <h2 class="summary-title">Resumo do Mês - Janeiro 2025</h2>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">Total Gasto</div>
+                    <div class="summary-value">R$ 8.450</div>
+                    <div class="summary-change negative">↑ 5% vs mês anterior</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Categoria Principal</div>
+                    <div class="summary-value">Funcionários</div>
+                    <div class="summary-change">R$ 3.200 (38%)</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Impacto no Lucro</div>
+                    <div class="summary-value">-15%</div>
+                    <div class="summary-change negative">Margem reduzida</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="alert-card">
+            <div class="alert-title">⚠️ Atenção: Gastos com funcionários acima da média</div>
+            <div class="alert-text">Seus gastos com funcionários representam 38% do total, enquanto a média para restaurantes é de 28%. Considere revisar a estrutura da equipe.</div>
+        </div>
+
+        <div class="suggestion-card">
+            <div class="suggestion-title">💡 Sugestão: Renegociar contrato de fornecedor</div>
+            <div class="suggestion-text">Detectamos que seus gastos com ingredientes aumentaram 22% no último trimestre. Talvez seja interessante buscar novos fornecedores ou renegociar valores.</div>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <span class="integration-icon">🏦</span>
+                <div class="integration-title">Conecte seu banco com Open Finance</div>
+            </div>
+            <p style="color: #2c5282; margin-bottom: 15px;">
+                Conecte sua conta bancária e automatize o controle de despesas com total segurança.
+            </p>
+            <ul class="integration-benefits">
+                <li>Menos trabalho manual</li>
+                <li>Dados mais precisos</li>
+                <li>Relatórios automáticos baseados em transações reais</li>
+                <li>Alertas inteligentes baseados em fatos</li>
+            </ul>
+            <button class="btn-integration">Conectar Banco (Open Finance)</button>
+            <p style="font-size: 12px; color: #2c5282; margin-top: 10px;">
+                * Acesso somente leitura. Opcional e seguro.
+            </p>
+        </div>
+
+        <div class="two-column-layout">
+            <div class="card" id="addExpenseForm">
+                <h2 class="card-title">Adicionar Nova Despesa</h2>
+                <form>
+                    <div class="form-group">
+                        <label class="form-label">Valor *</label>
+                        <input type="number" class="form-input" placeholder="R$ 0,00" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria *</label>
+                        <select class="form-select" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="ingredientes">Ingredientes</option>
+                            <option value="funcionarios">Funcionários</option>
+                            <option value="energia">Energia</option>
+                            <option value="gas">Gás</option>
+                            <option value="delivery">Delivery</option>
+                            <option value="fornecedores">Fornecedores</option>
+                            <option value="impostos">Impostos</option>
+                            <option value="manutencao">Manutenção</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data *</label>
+                        <input type="date" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Forma de Pagamento *</label>
+                        <select class="form-select" required>
+                            <option value="">Selecione</option>
+                            <option value="dinheiro">Dinheiro</option>
+                            <option value="cartao-credito">Cartão de Crédito</option>
+                            <option value="cartao-debito">Cartão de Débito</option>
+                            <option value="pix">PIX</option>
+                            <option value="transferencia">Transferência</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observação (opcional)</label>
+                        <textarea class="form-textarea" placeholder="Adicione detalhes sobre esta despesa..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Registrar Despesa</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Despesas Recentes</h2>
+                <ul class="expense-list">
+                    <li class="expense-item">
+                        <div class="expense-info">
+                            <div class="expense-category">Ingredientes</div>
+                            <div class="expense-date">25/01/2025 - PIX</div>
+                        </div>
+                        <div class="expense-value">R$ 850,00</div>
+                    </li>
+                    <li class="expense-item">
+                        <div class="expense-info">
+                            <div class="expense-category">Energia</div>
+                            <div class="expense-date">22/01/2025 - Débito</div>
+                        </div>
+                        <div class="expense-value">R$ 320,50</div>
+                    </li>
+                    <li class="expense-item">
+                        <div class="expense-info">
+                            <div class="expense-category">Funcionários</div>
+                            <div class="expense-date">20/01/2025 - Transferência</div>
+                        </div>
+                        <div class="expense-value">R$ 3.200,00</div>
+                    </li>
+                    <li class="expense-item">
+                        <div class="expense-info">
+                            <div class="expense-category">Delivery</div>
+                            <div class="expense-date">18/01/2025 - Crédito</div>
+                        </div>
+                        <div class="expense-value">R$ 450,00</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="card-title">Distribuição de Despesas por Categoria</h2>
+            <div class="chart-placeholder">
+                Gráfico de barras mostrando distribuição por categoria
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="card-title">Evolução Mensal de Gastos</h2>
+            <div class="chart-placeholder">
+                Gráfico de linha mostrando evolução dos gastos nos últimos 6 meses
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 30px;">
+            <h2 class="card-title">Link Rápido</h2>
+            <p style="margin-bottom: 15px; color: #718096;">Gerencie sua equipe e custos com funcionários</p>
+            <a href="funcionarios.html" class="btn-primary" style="display: inline-block; text-decoration: none;">
+                Ver Gestão de Funcionários →
+            </a>
+        </div>
+    </main>
+</body>
+</html>
