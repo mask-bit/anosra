@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: anosra-backend
+    name: anosra
     env: python
     region: oregon
     plan: free
@@ -13,5 +13,3 @@ services:
         generateValue: true
       - key: DATABASE_URL
         value: sqlite:///anosra.db
-      - key: PYTHON_VERSION
-        value: 3.11.0
