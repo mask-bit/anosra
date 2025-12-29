@@ -287,9 +287,16 @@
     </div>
 
     <!-- Adding API integration -->
-    <script src="js/api.js"></script>
+    <script src="/static/js/api.js"></script>
     <script>
         // Redirect if already logged in
+        function redirectIfAuthenticated() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = '/dashboard';
+            }
+        }
+
         redirectIfAuthenticated();
 
         const form = document.getElementById('signupForm');
@@ -387,6 +394,10 @@
 
         function isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function showNotification(message, type) {
+            alert(message);
         }
 
         form.addEventListener('submit', async function(e) {
