@@ -680,7 +680,39 @@
         </footer>
     </main>
 
+    <script src="/static/js/api.js"></script>
     <script>
+        if (!api.requireAuth()) {
+            // Will redirect to login if not authenticated
+        }
+
+        const currentUser = api.getCurrentUser()
+        if (currentUser) {
+            const userNameElement = document.querySelector('.user-name')
+            const userAvatarElement = document.querySelector('.user-avatar')
+            
+            if (userNameElement && currentUser.owner_name) {
+                userNameElement.textContent = currentUser.owner_name
+            }
+            
+            if (userAvatarElement && currentUser.owner_name) {
+                const initials = currentUser.owner_name
+                    .split(' ')
+                    .map(n => n[0])
+                    .join('')
+                    .toUpperCase()
+                    .substring(0, 2)
+                userAvatarElement.textContent = initials
+            }
+        }
+
+        document.querySelector('.user-menu').addEventListener('click', function(e) {
+            const confirmLogout = confirm('Deseja sair da sua conta?')
+            if (confirmLogout) {
+                api.logout()
+            }
+        })
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('collapsed');
